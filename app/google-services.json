@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1371609140",
+    "firebase_url": "https://avad-c073a.firebaseio.com",
+    "project_id": "avad-c073a",
+    "storage_bucket": "avad-c073a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1371609140:android:24163a17a68e6ba8",
+        "android_client_info": {
+          "package_name": "com.android.avad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1371609140-te063rbivfvqlsm5rceulhjfpn9jnih4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.android.avad",
+            "certificate_hash": "6FFF59030BD3A91802D3FC012295CB98855B5F2E"
+          }
+        },
+        {
+          "client_id": "1371609140-3i34uugfv6ih1ru88g5kchukrl5el889.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyd-f2beOjK_BiODK_Hh-FIvBsRxH1Huo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1371609140-3i34uugfv6ih1ru88g5kchukrl5el889.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

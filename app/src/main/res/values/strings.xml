@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Avad</string>
+    <string name="facebook_app_id">202031296866569</string>
+    <string name="permission_write_external_storage">Allow Avad to write External Storage?</string>
+    <string name="permission_access_location">Allow Avad to use location services?</string>
+    <string name="loading">Loading…</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="signed_out">Signed Out</string>
+    <string name="desc_avad_lockup">Avad logo and name</string>
+    <string name="facebook_title_text">Facebook Login</string>
+    <string name="hint_search_interest">Find Interest</string>
+</resources>
