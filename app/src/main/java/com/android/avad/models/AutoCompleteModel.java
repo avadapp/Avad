@@ -8,6 +8,7 @@ public class AutoCompleteModel {
     public String interests;
     public String peopleCount;
 
+
     public void setInterests(String interests){
         this.interests = interests;
     }

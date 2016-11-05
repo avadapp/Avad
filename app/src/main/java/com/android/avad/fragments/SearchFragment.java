@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,7 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +25,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.avad.R;
-import com.android.avad.adapters.AutoCompleteAdapter;
 import com.android.avad.adapters.ItemListAdapter;
-import com.android.avad.models.AutoCompleteModel;
 import com.android.avad.models.Search;
 import com.android.avad.utilities.ErrorDialogFragment;
 import com.android.avad.utilities.NetworkUtil;
+import com.android.avad.utilities.Utils;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -56,9 +56,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -117,7 +115,6 @@ public class SearchFragment extends Fragment implements LocationListener,
     FirebaseAuth mAuth;
     GeoFire geoFire;
     AppCompatButton SearchButton;
-
     AutoCompleteTextView InterestText;
     View rootView;
     ItemListAdapter mItemListAdapter;
@@ -458,63 +455,17 @@ public class SearchFragment extends Fragment implements LocationListener,
 
     private void startGeoQuery(){
         query = geoFire.queryAtLocation(center, 1);
-        final ArrayAdapter<String> autoComplete = new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_1);
+        final ArrayAdapter<String> autoComplete = new ArrayAdapter<>(getActivity(),android.R.layout.simple_selectable_list_item);
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(final String key, GeoLocation location) {
                 Log.d(TAG, "Key " + key + " entered the search area at [" + location.latitude + "," + location.longitude + "]");
                 autoComplete.add(key);
-                DatabaseReference tempRef = mDatabase.child(key);
-                tempRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                       /* List<HashMap<String,String>> aList = new ArrayList<>();
-                        HashMap<String, String> hm = new HashMap<>();
-                        hm.put("txt", key);
-                        hm.put("flag", String.valueOf(snapshot.getChildrenCount()) );
-                        aList.add(hm);
-
-                        // Keys used in Hashmap
-                        String[] from = { "txt","flag"};
-
-                        // Ids of views in listview_layout
-                        int[] to = { R.id.auto_text,R.id.auto_text_counts};
-
-                        SimpleAdapter adapter = new SimpleAdapter(getContext(), aList, R.layout.auto_complete_items, from, to); */
-
-                        List<AutoCompleteModel> modelList  = new ArrayList<>();
-                        AutoCompleteModel autoCompleteModel = new AutoCompleteModel();
-                        autoCompleteModel.setInterests(key);
-                        autoCompleteModel.setPeopleCount(String.valueOf(snapshot.getChildrenCount()));
-                        modelList.add(autoCompleteModel);
-
-                        AutoCompleteAdapter adapter = new AutoCompleteAdapter(getActivity(),R.layout.auto_complete_items,modelList);
-                        InterestText = (AutoCompleteTextView) rootView.findViewById(R.id.autocomplete);
-                        InterestText.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
-                        InterestText.setTextColor(Color.BLACK);
-                        // I  add the deal only if it doesn't exist already in the adapter
-                        //String key = snapshot.getKey();
-                        /*if (!mItemListAdapter.exists(key)) {
-                            Log.d(TAG, "item added " + key);
-                            mItemListAdapter.addSingle(snapshot);
-                            mItemListAdapter.notifyDataSetChanged();
-                        } else {
-                            //...otherwise I will update the record
-                            Log.d(TAG, "item updated: " + key);
-                            mItemListAdapter.update(snapshot, key);
-                            mItemListAdapter.notifyDataSetChanged();
-                        } */
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.d(TAG, "cancelled with error:" + databaseError.getMessage());
-                    }
-                });
             }
 
-                    @Override
+            @Override
             public void onKeyExited(String key) {
+                autoComplete.remove(key);
 
             }
 
@@ -533,7 +484,38 @@ public class SearchFragment extends Fragment implements LocationListener,
 
             }
         });
+        InterestText = (AutoCompleteTextView) rootView.findViewById(R.id.autocomplete);
+        InterestText.setAdapter(autoComplete);
+        InterestText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                updatePostButtonState();
+            }
+        });
     }
 
+    private String getPostEditTextText () {
+        return InterestText.getText().toString().trim();
+    }
+
+    private void updatePostButtonState () {
+        int length = getPostEditTextText().length();
+        boolean enabled = length > 0 && length < Utils.getPostMaxCharacterCount();
+        SearchButton.setEnabled(enabled);
+
+        if (length == 0 || length > Utils.getPostMaxCharacterCount()){
+            InterestText.setError("19 Characters Only");
+        }
+    }
 
 }
