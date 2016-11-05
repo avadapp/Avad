@@ -136,7 +136,7 @@ public class LoginActivity extends BaseActivity  {
 
         mCallbackManager = CallbackManager.Factory.create();
 
-        loginButton.setReadPermissions("email", "public_profile");
+        loginButton.setReadPermissions("email", "public_profile", "user_birthday");
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -152,11 +152,15 @@ public class LoginActivity extends BaseActivity  {
                     @Override
                     public void onCompleted(JSONObject user, GraphResponse graphResponse) {
                         String gender = user.optString("gender");
+                        String age = user.optString("birthday");
                         Log.i(TAG, "Gender:- " + gender);
+                        Log.i(TAG, "Age:- " + age);
+
+                        Log.i("MyLog", user.toString());
                     }
                 });
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "gender");
+                parameters.putString("fields", "gender, birthday");
                 request.setParameters(parameters);
                 request.executeAsync();
 
