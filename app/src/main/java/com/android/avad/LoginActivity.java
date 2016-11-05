@@ -22,6 +22,8 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -32,6 +34,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import org.json.JSONObject;
 
 import me.arulnadhan.AchievementUnlockedLib.AchievementUnlocked;
 
@@ -132,7 +136,7 @@ public class LoginActivity extends BaseActivity  {
 
         mCallbackManager = CallbackManager.Factory.create();
 
-        loginButton.setReadPermissions("email", "public_profile");
+        loginButton.setReadPermissions("email", "public_profile", "user_birthday");
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -142,6 +146,23 @@ public class LoginActivity extends BaseActivity  {
                 if (profile != null) {
                     loginToast(profile.getName());
                 }
+
+                final AccessToken accessToken = loginResult.getAccessToken();
+                GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject user, GraphResponse graphResponse) {
+                        String gender = user.optString("gender");
+                        String age = user.optString("birthday");
+                        Log.i(TAG, "Gender:- " + gender);
+                        Log.i(TAG, "Age:- " + age);
+
+                        Log.i("MyLog", user.toString());
+                    }
+                });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "gender, birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
 
             }
 
