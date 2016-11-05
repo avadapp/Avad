@@ -17,6 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.avad.utilities.Utils;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -152,7 +153,7 @@ public class LoginActivity extends BaseActivity  {
                     @Override
                     public void onCompleted(JSONObject user, GraphResponse graphResponse) {
                         String gender = user.optString("gender");
-                        String age = user.optString("birthday");
+                        int age = Utils.getAge(user.optString("birthday"));
                         Log.i(TAG, "Gender:- " + gender);
                         Log.i(TAG, "Age:- " + age);
 
